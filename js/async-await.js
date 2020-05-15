@@ -4,20 +4,25 @@ const peopleList = document.getElementById('people');
 const btn = document.querySelector('button');
 
 // Handle all fetch requests
+async function getJSON(url){
+  try{
+    const response = await fetch(url);
+    return await response.json();
+  } catch(error) {
+    throw error;
+  }
+}
 async function getPeopleInSpace(url) {
-  const peopleResponse = await fetch(url);
-  const peopleJson = await peopleResponse.json();
+  const peopleJson = await getJSON(url);
 
   const profiles = peopleJson.people.map( async (person) =>{
     const craft = person.craft;
     if(person.name == "Anatoly Ivanishin") {
-      const profileResponse = await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/Anatoli_Ivanishin")
-      const profileJSON = await profileResponse.json();
+      const profileJSON = await getJSON('https://en.wikipedia.org/api/rest_v1/page/summary/Anatoli_Ivanishin');
 
       return {...profileJSON, craft}
     }
-    const profileResponse = await fetch(wikiUrl + person.name);
-    const profileJSON = await profileResponse.json();
+    const profileJSON = await getJSON(wikiUrl + person.name);
 
     return { ...profileJSON, craft}
   });
@@ -46,6 +51,10 @@ btn.addEventListener('click', (event) => {
 
   getPeopleInSpace(astrosUrl)
   .then(generateHTML)
+  .catch( e=> {
+    peopleList.innerHTML = '<h3>Something went wrong</h3>';
+    console.error(e)
+  })
   .finally( ()=>{
     event.target.remove();
   })
