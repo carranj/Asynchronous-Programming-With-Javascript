@@ -50,7 +50,7 @@ btn.addEventListener('click', (event) => {
     .then(getProfiles)
     .then(generateHTML)
     .catch(err => {
-      peopleList.innerHTML = '<h3>Something went wrong!</h3>'
+      peopleList.innerHTML = '<h3>Something went wrong!</h3>';
       console.log(err)
     })
     .finally( () => event.target.remove() )
