@@ -13,9 +13,8 @@ async function getPeopleInSpace(url) {
     if(person.name == "Anatoly Ivanishin") {
       const profileResponse = await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/Anatoli_Ivanishin")
       const profileJSON = await profileResponse.json();
-      
+
       return {...profileJSON, craft}
-       
     }
     const profileResponse = await fetch(wikiUrl + person.name);
     const profileJSON = await profileResponse.json();
@@ -42,10 +41,12 @@ function generateHTML(data) {
   });
 }
 
-btn.addEventListener('click', async (event) => {
+btn.addEventListener('click', (event) => {
   event.target.textContent = "Loading...";
 
-  const astros = await getPeopleInSpace(astrosUrl);
-  generateHTML(astros);
-  event.target.remove();
+  getPeopleInSpace(astrosUrl)
+  .then(generateHTML)
+  .finally( ()=>{
+    event.target.remove();
+  })
 });
